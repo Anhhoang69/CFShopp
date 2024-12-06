@@ -30,8 +30,8 @@ class ListNV extends Component {
     return null;
   }
 
-  onDelete = (_id) => {
-    this.props.onDelete(_id);
+  onDelete = (empID) => {
+    this.props.onDelete(empID);
   };
 
   onChange = (event) => {
@@ -99,11 +99,14 @@ class ListNV extends Component {
 
     const employeeList = employees.map((employee, index) => (
       <OneRowData
-        key={employee.id}
-        index={index}
-        employee={employee}
-        onDelete={this.onDelete}
-      />
+  key={employee.empID}
+  index={index}
+  employee={employee}
+  onDelete={this.onDelete}
+  deleteError={this.props.deleteError[employee.empID] || ""} // Lỗi cho nhân viên này
+  dismissError={() => this.props.dismissError(employee.empID)} // Hàm ẩn lỗi riêng
+/>
+
     ));
 
     return (

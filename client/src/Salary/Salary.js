@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 class EmployeeSalaryReport extends Component {
   constructor(props) {
@@ -9,6 +10,7 @@ class EmployeeSalaryReport extends Component {
       startDate: "",
       endDate: "",
       salaries: [], // Dữ liệu kết quả trả về
+      error: "", // Lỗi nếu có trong quá trình gọi API
     };
   }
 
@@ -17,63 +19,52 @@ class EmployeeSalaryReport extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSearch = () => {
+  handleSearch = async () => {
     const { shopID, startDate, endDate } = this.state;
-
-    // Hardcode dữ liệu giả lập thay cho việc gọi API/database
-    const mockData = [
-      { empID: "E001", empName: "Nguyen Van A", Salary: 5000000 },
-      { empID: "E002", empName: "Tran Thi B", Salary: 4500000 },
-      { empID: "E003", empName: "Le Van C", Salary: 6000000 },
-    ];
 
     // Kiểm tra dữ liệu đầu vào
     if (shopID.length !== 5) {
       this.setState({
-        salaries: [
-          {
-            empID: "ERROR",
-            empName: "ID cửa hàng không đúng định dạng",
-            Salary: null,
-          },
-        ],
+        salaries: [],
+        error: "ID cửa hàng không đúng định dạng",
       });
       return;
     }
 
     if (startDate > endDate) {
       this.setState({
-        salaries: [
-          {
-            empID: "ERROR",
-            empName: "Lỗi thời gian",
-            Salary: null,
-          },
-        ],
+        salaries: [],
+        error: "Lỗi thời gian",
       });
       return;
     }
 
-    if (shopID !== "CF001") {
+
+    try {
+      // Gửi yêu cầu POST đến API backend với tham số shopID, startDate, endDate
+      const response = await axios.post("http://localhost:5000/calculate-salaries", {
+        shopID,
+        startDate,
+        endDate,
+      });
+
+      // Lưu kết quả vào state
       this.setState({
-        salaries: [
-          {
-            empID: "ERROR",
-            empName: "Cửa hàng không tồn tại",
-            Salary: null,
-          },
-        ],
+        salaries: response.data,
+        error: "",
       });
-      return;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      this.setState({
+        salaries: [],
+        error: "Có lỗi khi tính lương, vui lòng thử lại!",
+      });
     }
-
-    // Giả lập lọc dữ liệu từ khoảng thời gian và ShopID
-    const filteredData = mockData.filter((item) => shopID === "CF001");
-    this.setState({ salaries: filteredData });
   };
 
+
   render() {
-    const { shopID, startDate, endDate, salaries } = this.state;
+    const { shopID, startDate, endDate, salaries, error } = this.state;
 
     return (
       <div className="container">
@@ -124,6 +115,9 @@ class EmployeeSalaryReport extends Component {
         <Link to="/list-employees" className="btn btn-secondary">
           Quay về
         </Link>
+
+        {/* Hiển thị lỗi nếu có */}
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
 
         {/* Bảng kết quả */}
         {salaries.length > 0 && (

@@ -107,3 +107,8 @@ tr {
     background-color: #096e16;
   }
 }
+/* Loại bỏ dấu chấm tròn cho danh sách email */
+.no-bullets {
+  list-style-type: none; /* Loại bỏ dấu chấm tròn */
+  padding: 0; /* Loại bỏ khoảng cách bên trái */
+}

@@ -1,28 +1,30 @@
-import dotenv from 'dotenv'; // Import dotenv to load environment variables
-import sql from 'mssql'; // Import mssql for SQL Server interaction
+import dotenv from 'dotenv';
+import sql from 'mssql';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); // Nạp biến môi trường từ .env
 
 const config = {
-  server: process.env.DB_SERVER || 'localhost', // Default to localhost if not set in .env
-  database: process.env.DB_DATABASE || 'master', // Default to 'master' if not set
+  server: process.env.DB_SERVER || 'localhost',
+  database: process.env.DB_DATABASE || 'master',
+  user: process.env.DB_USER,  // Lấy user từ .env
+  password: process.env.DB_PASSWORD,  // Lấy password từ .env
   options: {
-    encrypt: false, // Set to true if using Azure, false for local SQL Server
-    trustServerCertificate: true, // For self-signed certificates (e.g., local server)
+    encrypt: false,  // Set true nếu dùng Azure
+    trustServerCertificate: true,  // Bỏ qua chứng chỉ tự ký
   },
-  port: 1433, // Default SQL Server port (changed to 1433; 1443 is incorrect)
+  port: 1433,  // Cổng mặc định của SQL Server
 };
 
-// Function to connect to the system database
+// Hàm kết nối đến cơ sở dữ liệu
 async function connectToSystemDatabase() {
   try {
-    const pool = await sql.connect(config); // Establish the connection
+    const pool = await sql.connect(config); // Thiết lập kết nối
     console.log('Connected to the SQL Server system database.');
-    return pool; // Return the pool for further use
+    return pool; // Trả về pool để sử dụng tiếp
   } catch (err) {
     console.error('Error connecting to the database:', err.message);
-    throw err; // Throw the error to be handled elsewhere
+    throw err; // Ném lỗi để xử lý ở nơi khác
   }
 }
 
-export default connectToSystemDatabase; // Export the function for use in other files
+export default connectToSystemDatabase; // Xuất hàm kết nối
