@@ -16,7 +16,7 @@ CFShopp is a coffee shop chain management system designed to handle multi-branch
 - **Database**: Microsoft SQL Server (MS SQL)
 - **Tools**: GitHub, Draw.io
 
-[Xem sơ đồ ERD trên Draw.io](https://drive.google.com/file/d/1bWZGZd0-rNbdzJC1cITKCEaV2U1pC_gU/view?usp=drive_link)
+[View ERD diagram on Draw.io](https://drive.google.com/file/d/1bWZGZd0-rNbdzJC1cITKCEaV2U1pC_gU/view?usp=drive_link)
 
 ## Installation
 1. Clone this repository
